@@ -8,6 +8,10 @@ const hbs          = require('hbs');
 const mongoose     = require('mongoose');
 const logger       = require('morgan');
 const path         = require('path');
+const session      = require('express-session');
+const MongoStore   = require('connect-mongo')(session);
+const passport     = require('passport');
+const User          = require('./models/User');
 
 mongoose.Promise = Promise;
 mongoose
@@ -29,6 +33,29 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 
+app.use(session({
+  secret: 'twitter',
+  resave: true,
+  saveUninitialized: true,
+  cookie: { maxAge: 6000000 },
+  store: new MongoStore( { mongooseConnection: mongoose.connection }),
+  ttl: 24 * 60 * 60 // 1 day
+}));
+
+passport.serializeUser((user, cb) => {
+  cb(null, user._id);
+});
+
+passport.deserializeUser((id, cb) => {
+  User.findById(id, (err, user) => {
+    if (err) { return cb(err); }
+    cb(null, user);
+  });
+});
+
+app.use(passport.initialize());
+app.use(passport.session());
+
 // Express View engine setup
 app.use(require('node-sass-middleware')({
   src:  path.join(__dirname, 'public'),
@@ -46,6 +73,8 @@ app.locals.title = 'Express - Generated with IronGenerator';
 
 // Routes
 const index = require('./routes/index');
+const authRoutes = require('./routes/auth');
 app.use('/', index);
+app.use('/auth', authRoutes);
 
 module.exports = app;
