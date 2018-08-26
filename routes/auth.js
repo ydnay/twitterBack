@@ -89,4 +89,29 @@ authRoutes.post('/login', (req, res, next) => {
   })(req, res, next);
 });
 
+// Logout
+authRoutes.post('/logout', (req, res, next) => {
+  req.logout();
+  res.status(200).json({ message: 'Success' });
+});
+
+// Loggedin
+authRoutes.get('/loggedin', (req, res, next) => {
+  if (req.isAuthenticated()) {
+    res.status(200).json(req.user);
+    return;
+  }
+  res.status(403).json({ message: 'Unauthorized' });
+});
+
+// Private
+authRoutes.get('/private', (req, res, next) => {
+  if (req.isAuthenticated()) {
+    res.json({ message: 'This is a private message' });
+    return;
+  }
+
+  res.status(403).json({ message: 'Unauthorized' });
+});
+
 module.exports = authRoutes;
