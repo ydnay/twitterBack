@@ -65,4 +65,28 @@ authRoutes.post('/signup', (req, res, next) => {
   });
 });
 
+// Post Login
+authRoutes.post('/login', (req, res, next) => {
+  passport.authenticate('local', (err, theUser, failureDetails) => {
+    if (err) {
+      res.status(500).json({ message: 'Server Error' });
+      return;
+    }
+
+    if (!theUser) {
+      res.status(401).json(failureDetails);
+      return;
+    }
+
+    req.login(theUser, (err) => {
+      if (err) {
+        res.status(500).json({ message: 'Something went wrong' });
+        return;
+      }
+      
+      res.status(200).json({message: 'Logged In'});
+    });
+  })(req, res, next);
+});
+
 module.exports = authRoutes;

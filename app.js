@@ -1,18 +1,21 @@
 require('dotenv').config();
 
-const bodyParser   = require('body-parser');
-const cookieParser = require('cookie-parser');
-const express      = require('express');
-const favicon      = require('serve-favicon');
-const hbs          = require('hbs');
-const mongoose     = require('mongoose');
-const logger       = require('morgan');
-const path         = require('path');
-const session      = require('express-session');
-const MongoStore   = require('connect-mongo')(session);
-const passport     = require('passport');
+const bodyParser    = require('body-parser');
+const cookieParser  = require('cookie-parser');
+const express       = require('express');
+const favicon       = require('serve-favicon');
+const hbs           = require('hbs');
+const mongoose      = require('mongoose');
+const logger        = require('morgan');
+const path          = require('path');
+const session       = require('express-session');
+const MongoStore    = require('connect-mongo')(session);
+const passport      = require('passport');
+const LocalStrategy = require('passport-local').Strategy;
 const User          = require('./models/User');
+const bcrypt        = require('bcrypt');
 
+// DB connection
 mongoose.Promise = Promise;
 mongoose
   .connect('mongodb://localhost/twitterback', {useMongoClient: true})
@@ -21,9 +24,6 @@ mongoose
   }).catch(err => {
     console.error('Error connecting to mongo', err)
   });
-
-const app_name = require('./package.json').name;
-const debug = require('debug')(`${app_name}:${path.basename(__filename).split('.')[0]}`);
 
 const app = express();
 
@@ -42,14 +42,35 @@ app.use(session({
   ttl: 24 * 60 * 60 // 1 day
 }));
 
-passport.serializeUser((user, cb) => {
-  cb(null, user._id);
+passport.use(new LocalStrategy((username, password, next) => {
+  User.findOne({ username }, (err, foundUser) => {
+    if (err) {
+      next(err);
+      return;
+    }
+
+    if (!foundUser) {
+      next(null, false, { message: 'Incorrect username-password combination' });
+      return;
+    }
+
+    if (!bcrypt.compareSync(password, foundUser.password)) {
+      next(null, false, { message: 'Incorrect username-password combination' });
+      return;
+    }
+
+    next(null, foundUser);
+  });
+}));
+
+passport.serializeUser((loggedInUser, cb) => {
+  cb(null, loggedInUser._id);
 });
 
-passport.deserializeUser((id, cb) => {
-  User.findById(id, (err, user) => {
+passport.deserializeUser((sessionUserId, cb) => {
+  User.findById(sessionUserId, (err, userDocument) => {
     if (err) { return cb(err); }
-    cb(null, user);
+    cb(null, userDocument);
   });
 });
 
