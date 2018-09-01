@@ -1,9 +1,9 @@
-const express = require('express');
-const router  = express.Router();
-const mongoose      = require('mongoose');
+const express  = require('express');
+const router   = express.Router();
+const mongoose = require('mongoose');
 
 // Tweet model
-const User   = require('../models/User');
+const User     = require('../models/User');
 
 // Get user by id
 router.get('/:id', (req, res, next) => {
@@ -40,6 +40,21 @@ router.get('/:id/following', (req, res, next) => {
   User.findById(req.params.id).populate('following')
     .then(user => { res.status(200).json(user) })
     .catch(err => { res.status(500).json(err) })
-})
+});
+
+// Get user followers
+router.get('/:id/followers', (req, res, next) => {
+  User.findById(req.params.id).populate('followers')
+    .then(user => { res.status(200).json(user) })
+    .catch(err => { res.status(500).json(err) })
+});
+
+// Get user liked
+router.get('/:id/liked', (req, res, next) => {
+  User.findById(req.params.id).populate('liked')
+    .then(user => { res.status(200).json(user) })
+    .catch(err => { res.status(500).json(err) })
+});
+
 
 module.exports = router;
