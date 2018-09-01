@@ -35,24 +35,24 @@ router.put('/:id', (req, res, next) => {
   res.status(403).json({ message: "Not Authorized" });
 });
 
-// Get user following
+// Get user following w/o populating whole user
 router.get('/:id/following', (req, res, next) => {
-  User.findById(req.params.id).populate('following')
-    .then(user => { res.status(200).json(user) })
+  User.findById(req.params.id)
+    .then(user => { res.status(200).json(user.following) })
     .catch(err => { res.status(500).json(err) })
 });
 
-// Get user followers
+// Get user followers populating the users
 router.get('/:id/followers', (req, res, next) => {
   User.findById(req.params.id).populate('followers')
-    .then(user => { res.status(200).json(user) })
+    .then(user => { res.status(200).json(user.followers) })
     .catch(err => { res.status(500).json(err) })
 });
 
-// Get user liked
+// Get user liked populating the tweets
 router.get('/:id/liked', (req, res, next) => {
   User.findById(req.params.id).populate('liked')
-    .then(user => { res.status(200).json(user) })
+    .then(user => { res.status(200).json(user.liked) })
     .catch(err => { res.status(500).json(err) })
 });
 
