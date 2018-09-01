@@ -35,4 +35,11 @@ router.put('/:id', (req, res, next) => {
   res.status(403).json({ message: "Not Authorized" });
 });
 
+// Get user following
+router.get('/:id/following', (req, res, next) => {
+  User.findById(req.params.id).populate('following')
+    .then(user => { res.status(200).json(user) })
+    .catch(err => { res.status(500).json(err) })
+})
+
 module.exports = router;
