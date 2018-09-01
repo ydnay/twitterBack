@@ -5,9 +5,15 @@ const mongoose      = require('mongoose');
 // Tweet model
 const User   = require('../models/User');
 
-// Update user's profile.
+// Get user by id
+router.get('/:id', (req, res, next) => {
+  User.findById(req.params.id)
+    .then(user => { res.status(200).json(user) })
+    .catch(err => { res.status(500).json(err) })
+})
+
+// Update auth-user's profile.
 router.put('/:id', (req, res, next) => {
-  console.log(req.params.id);
   if(req.isAuthenticated()) {
     const userId = req.params.id;
 
@@ -16,7 +22,7 @@ router.put('/:id', (req, res, next) => {
       return;
     }
 
-    const { name, bio, city } = req.body
+    const { name, bio, city } = req.body;
 
     User.findByIdAndUpdate( userId, { name, bio, city })
       .then(home => {
