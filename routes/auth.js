@@ -84,7 +84,7 @@ authRoutes.post('/login', (req, res, next) => {
         return;
       }
       
-      res.status(200).json({message: 'Logged In'});
+      res.status(200).json({ message: 'Logged In' });
     });
   })(req, res, next);
 });

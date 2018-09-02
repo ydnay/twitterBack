@@ -10,7 +10,7 @@ router.get('/:id', (req, res, next) => {
   User.findById(req.params.id)
     .then(user => { res.status(200).json(user) })
     .catch(err => { res.status(500).json(err) })
-})
+});
 
 // Update auth-user's profile.
 router.put('/:id', (req, res, next) => {
@@ -55,6 +55,5 @@ router.get('/:id/liked', (req, res, next) => {
     .then(user => { res.status(200).json(user.liked) })
     .catch(err => { res.status(500).json(err) })
 });
-
 
 module.exports = router;

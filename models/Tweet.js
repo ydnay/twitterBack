@@ -5,8 +5,8 @@ const Schema   = mongoose.Schema;
 const tweetSchema = new Schema({
   user:       { type : Schema.Types.ObjectId, ref: 'Users', required: true },
   date:       { type: Date, default: Date.now },
-  hashtags:   { type: Array, default: [] },
-  message:    { type: String },
+  hashtags:   { type: Array },
+  message:    { type: String, minlength: 1, maxlength: 280 },
   retweetId:  { type: String, default: '' },
   replayId:   { type: String, default: '' },
   retweets:   { type: Number, default: 0 },
