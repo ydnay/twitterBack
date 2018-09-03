@@ -1,5 +1,6 @@
-const express = require('express');
-const router  = express.Router();
+const express  = require('express');
+const router   = express.Router();
+const mongoose = require('mongoose');
 
 // Tweet model
 const Tweet   = require('../models/Tweet');
@@ -39,6 +40,18 @@ router.get('/:id', (req, res, next) => {
   Tweet.findById(req.params.id)
     .then(user => { res.status(200).json(user) })
     .catch(err => { res.status(500).json(err) })
+});
+
+// Delete tweet
+router.delete('/:id', (req, res, next) => {
+  if(!mongoose.Types.ObjectId.isValid(req.params.id)) {
+    res.status(400).json({ message: 'Specified id is not valid' });
+    return;
+  }
+
+  Tweet.remove({ _id: req.params.id })
+    .then(note => { return res.json({ note: 'Tweet has been removed!' })})
+    .catch(err => next(err))
 });
 
 module.exports = router;
