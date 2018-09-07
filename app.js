@@ -102,4 +102,9 @@ app.use('/auth', authRoutes);
 app.use('/user', userRoutes);
 app.use('/tweet', tweetRoutes);
 
+// This will be the default route is nothing else is caught
+app.use(function(req, res) {
+  res.sendfile(__dirname + '/public/index.html');
+});
+
 module.exports = app;
