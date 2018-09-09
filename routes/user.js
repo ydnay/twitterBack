@@ -25,7 +25,7 @@ router.put('/:id', (req, res, next) => {
     const { name, bio, city } = req.body;
 
     User.findByIdAndUpdate( userId, { name, bio, city })
-      .then(home => {
+      .then(user => {
         return res.json({ message: "User successfully updated" });
       })
       .catch(error => next(error));
