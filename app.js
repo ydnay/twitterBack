@@ -28,19 +28,23 @@ mongoose
 const app = express();
 
 // Middleware Setup
-app.use(logger('dev'));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cookieParser());
 
 app.use(session({
   secret: 'twitter',
   resave: true,
   saveUninitialized: true,
-  cookie: { maxAge: 6000000 },
+  cookie: { httpOnly: true, maxAge: 2419200000 },
   store: new MongoStore( { mongooseConnection: mongoose.connection }),
-  ttl: 24 * 60 * 60 // 1 day
+  // ttl: 24 * 60 * 60 // 1 day
 }));
+
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(cors());
+app.use(logger('dev'));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(cookieParser());
 
 passport.use(new LocalStrategy((username, password, next) => {
   User.findOne({ username }, (err, foundUser) => {
@@ -73,9 +77,6 @@ passport.deserializeUser((sessionUserId, cb) => {
     cb(null, userDocument);
   });
 });
-
-app.use(passport.initialize());
-app.use(passport.session());
 
 // Express View engine setup
 app.use(require('node-sass-middleware')({
