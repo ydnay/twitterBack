@@ -41,7 +41,10 @@ app.use(session({
 
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(cors());
+app.use(cors({
+  credentials: true,
+  origin: ['http://localhost:4200']
+}));
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
