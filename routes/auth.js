@@ -6,7 +6,7 @@ const passport      = require('passport');
 const User          = require('../models/User');
 
 // Bcrypt to encrypt passwords
-const bcrypt        = require('bcrypt');
+const bcrypt        = require('bcryptjs');
 const bcryptSalt    = 10;
 
 // Post Sign up

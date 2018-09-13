@@ -14,7 +14,7 @@ const MongoStore    = require('connect-mongo')(session);
 const passport      = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const User          = require('./models/User');
-const bcrypt        = require('bcrypt');
+const bcrypt        = require('bcryptjs');
 
 // DB connection
 mongoose.Promise = Promise;
