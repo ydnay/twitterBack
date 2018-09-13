@@ -43,7 +43,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(cors({
   credentials: true,
-  origin: ['http://localhost:4200']
+  origin: ['http://localhost:4200', 'https://twitter-klone.herokuapp.com']
 }));
 app.use(logger('dev'));
 app.use(bodyParser.json());
