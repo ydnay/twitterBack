@@ -35,6 +35,19 @@ router.post('/', (req, res, next) => {
   });
 });
 
+// Get tweet list
+router.get('/', (req, res, next) => {
+  Tweet.find()
+  .then((tweetList, err) => {
+    if (err) {
+      res.json(err);
+      return;
+    }
+    res.json(tweetList);
+  })
+  .catch(error => next(error))
+});
+
 // Get tweet by id
 router.get('/:id', (req, res, next) => {
   Tweet.findById(req.params.id)
